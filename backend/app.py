@@ -5,8 +5,9 @@ from os import getenv
 from sys import exit
 
 def connect_database(connection_string, database_name):
-  client = MongoClient(connection_string, serverSelectionTimeoutMS=1000)
   try:
+    client = MongoClient(connection_string, serverSelectionTimeoutMS=1000)
+    client.server_info()
     database = client.get_database(database_name)
     print("MongoDB Connected")
     return database
