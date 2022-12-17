@@ -1,6 +1,10 @@
 # Base image
 FROM python:3.9-alpine
 
+# Set environment variables for database connection
+ENV MONGO_URI "mongodb+srv://portfolio123:portfolio123@cluster0.kqej46w.mongodb.net/?retryWrites=true&w=majority"
+ENV DB_NAME "Portfolio"
+
 # Set docker's working directory
 WORKDIR /app/backend
 
