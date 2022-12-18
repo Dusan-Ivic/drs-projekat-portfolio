@@ -15,7 +15,7 @@ def connect_database(connection_string, database_name):
     print("MongoDB Connection Failed")
     exit(mongo_err)
 
-db = connect_database(getenv("MONGO_URI"), getenv("DB_NAME"))
+db = connect_database ("mongodb+srv://portfolio123:portfolio123@cluster0.kqej46w.mongodb.net/?retryWrites=true&w=majority","Portfolio")
 
 app = Flask(__name__)
 
