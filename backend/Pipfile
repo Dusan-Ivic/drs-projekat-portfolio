@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 flask = "*"
 pymongo = "*"
-flask-pymongo = "*"
+flask-jwt-extended = "*"
 
 [dev-packages]
 

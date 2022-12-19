@@ -1,62 +1,73 @@
-from flask import Blueprint, request, jsonify
-# from datetime import datetime, timedelta, timezone
-# from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, unset_jwt_cookies, jwt_required, JWTManager
-# import json
+from flask import Blueprint, current_app, request, Response
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from werkzeug.security import check_password_hash
+from bson.json_util import dumps
+from bson.objectid import ObjectId
 
 auth_api = Blueprint("auth_api", __name__)
 
-# api = Flask(__name__)
-# api.config["JWT_SECRET_KEY"] = secrets.token_hex(12);
-# api.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
-# jwt = JWTManager(api)
-
-# @auth_api.after_request
-# def refresh_expiring_jwts(response):
-  # try:
-  #     exp_timestamp = get_jwt()["exp"]
-  #     now = datetime.now(timezone.utc)
-  #     target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
-  #     if target_timestamp > exp_timestamp:
-  #         access_token = create_access_token(identity=get_jwt_identity())
-  #         data = response.get_json()
-  #         if type(data) is dict:
-  #             data["access_token"] = access_token 
-  #             response.data = json.dumps(data)
-  #     return response
-  # except (RuntimeError, KeyError):
-  #     # Case where there is not a valid JWT. Just return the original respone
-  #   return response
-  # print("Refresh JWT")
-
 @auth_api.route("/login", methods=["POST"])
-def create_token():
-  # email = request.json.get("email", None);
-  # password = request.json.get("password", None);
+def login():
+  with current_app.app_context():
+    email = request.json.get("email", None);
+    password = request.json.get("password", None);
 
-  # #To-do: check the db and see if email and pw are valid
-  # if email != "test" or password != "test":
-  #     return {"msg": "Wrong email or password"}, 401;
+    user = current_app.db.users.find_one({ "email": email })
 
-  # access_token = create_access_token(identity=email); #create_access_token will create a token and store it
-  # response = {"access_token":access_token};
-  # return response;
-  return "Create token"
+    if user == None:
+      return not_found()
+
+    if not check_password_hash(user["password"], password):
+      return unauthorized()
+
+    # Konvertuje svaki id u string da bi obrisano $oid
+    user["_id"] = str(user["_id"])
+
+    access_token = create_access_token(identity=str(user["_id"]));
+
+    response_data = {
+      "success": True,
+      "message": "User logged in",
+      "data": user,
+      "access_token": access_token
+    }
+
+    return Response(response=dumps(response_data), status=200, mimetype="application/json")
 
 @auth_api.route("/profile", methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def my_profile():
-  # response_body = {
-  #     "Json1": "Welcome to the frontend page",
-  #     "about" :"This is some next about this front end page that will be sent to react"
-  # }
-  # return response_body
-  return "My profile"
+  token = get_jwt_identity()
+  with current_app.app_context():
+    user = current_app.db.users.find_one({ "_id": ObjectId(token) })
 
-@auth_api.route("/logout", methods=["DELETE"])
-def logout():
-  # jti = get_jwt()["jti"]
-  # #jwt_redis_blocklist.set(jti, "", ex=ACCESS_EXPIRES)
-  # response = jsonify({"msg": "logout successful"})
-  # unset_jwt_cookies(response);
-  # return response;
-  return "Logout"
+    if user == None:
+      return not_found()
+
+    # Konvertuje svaki id u string da bi obrisano $oid
+    user["_id"] = str(user["_id"])
+
+    response_data = {
+      "success": True,
+      "data": user,
+    }
+
+    return Response(response=dumps(response_data), status=200, mimetype="application/json")
+  
+@auth_api.errorhandler(401)
+def unauthorized(error=None):
+  response_data = {
+    "success": False,
+    "message": "Wrong or missing credentials",
+    "endpoint": request.endpoint
+  }
+  return Response(response=dumps(response_data), status=401, mimetype="application/json")
+
+@auth_api.errorhandler(404)
+def not_found(error=None):
+  response_data = {
+    "success": False,
+    "message": "User Not Found",
+    "endpoint": request.endpoint
+  }
+  return Response(response=dumps(response_data), status=404, mimetype="application/json")
