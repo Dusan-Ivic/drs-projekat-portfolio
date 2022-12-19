@@ -20,6 +20,7 @@ def connect_database(connection_string, database_name):
     print("MongoDB Connection Failed")
     exit(mongo_err)
 
+
 db = connect_database ("mongodb+srv://portfolio123:portfolio123@cluster0.kqej46w.mongodb.net/?retryWrites=true&w=majority","Portfolio")
 
 app = Flask(__name__)
@@ -63,11 +64,11 @@ def purge_user(id):
   return resp
 
 #vrati usera po id 
-@app.route('/api/fetch_one/<id>',methods = ['GET'])
-def fetch_one(id):
-  user = db.fortesting.find_one({'_id':ObjectId(id)})
-  resp = dumps(user)
-  return resp
+#@app.route('/api/fetch_one/<id>',methods = ['GET'])
+#def fetch_one(id):
+#  user = db.fortesting.find_one({'_id':ObjectId(id)})
+#  resp = dumps(user)
+#  return resp
 
 #izmeni postojeceg korisnika
 @app.route('/api/update/<id>', methods=['PUT'])
@@ -82,6 +83,10 @@ def update(id):
   _phone = _json['phone']
   _email = _json['email']
   _pwd = _json['pwd']
+  
+  user = db.fortesting.find_one({'_id':ObjectId(id)})
+  if user == None:
+    return not_found()
 
   if _name and _email and _pwd and _sname and _addr and _city and _country and _phone and  request.method == 'PUT':
     _hashed_pwd = generate_password_hash(_pwd)
@@ -108,5 +113,5 @@ def not_found(error = None):
   return resp
 
 if __name__ == "__main__":
-  app.run(debug=True)
+  app.run(debug=True,host="0.0.0.0")
 
