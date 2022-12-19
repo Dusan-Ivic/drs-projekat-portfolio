@@ -1,86 +1,129 @@
-from flask import Blueprint, jsonify, request
-# from bson.json_util import dumps
-# from flask_pymongo import PyMongo
-# from bson.objectid import ObjectId
-# from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Blueprint, current_app, Response, request
+from bson.json_util import dumps
+from pymongo import ReturnDocument
+from bson.objectid import ObjectId
+from werkzeug.security import generate_password_hash
 
 users_api = Blueprint("users_api", __name__)
 
-#vrati sve usere (ne znam koliko je ovo safe ili potrebno lmao)
+# Vrati sve korisnike
 @users_api.route("/api/users", methods=["GET"])
 def get_users():
-  # users = db.fortesting.find()
-  # resp = dumps(users)
-  # return resp
-  return "Get all users"
+  with current_app.app_context():
+    users = list(current_app.db.users.find())
 
-#dodavanje novog korisnika
+    # Konvertuje svaki id u string da bi obrisano $oid
+    for user in users:
+      user["_id"] = str(user["_id"])
+
+    response_data = {
+      "success": True,
+      "count": len(users),
+      "data": users,
+    }
+
+    return Response(response=dumps(response_data), status=200, mimetype="application/json")
+
+# Dodaj novog korisnika
 @users_api.route("/api/users", methods=["POST"])
 def register_user():
-  # _json = request.json
-  # _name = _json['name']
-  # _sname = _json['sname']
-  # _addr = _json['addr']
-  # _city = _json['city']
-  # _country = _json['country']
-  # _phone = _json['phone']
-  # _email = _json['email']
-  # _pwd = _json['pwd']
+  with current_app.app_context():
+    user = {
+      "firstName": request.json.get("firstName", None),
+      "lastName": request.json.get("lastName", None),
+      "address": request.json.get("address", None),
+      "city": request.json.get("city", None),
+      "country": request.json.get("country", None),
+      "phone": request.json.get("phone", None),
+      "email": request.json.get("email", None),
+      "password": generate_password_hash(request.json.get("password", None)),
+    }
 
-  # if _name and _email and _pwd and _sname and _addr and _city and _country and _phone and  request.method == 'POST':
-  #   _hashed_pwd = generate_password_hash(_pwd)
-  #   id = db.fortesting.insert_one({'name':_name,'email':_email,'pwd':_hashed_pwd,'sname':_sname,'addr':_addr,'city':_city,'country':_country,'phone':_phone})
-  #   resp = jsonify("User Added")
-  #   resp.status_code = 200
-  #   return resp
-  # else:
-  #   return not_found()
-  return "Register new user"
+    # TODO - Pre dodavanja proveriti da li su sva polja popunjena
+    # Odraditi pomocu klase a ne dictionary-a kao gore
 
-#izmeni postojeceg korisnika
+    current_app.db.users.insert_one(user)
+
+    # Konvertuje svaki id u string da bi obrisano $oid
+    user["_id"] = str(user["_id"])
+
+    response_data = {
+      "success": True,
+      "message": "User registered",
+      "data": user,
+    }
+
+    return Response(response=dumps(response_data), status=201, mimetype="application/json")
+
+# Izmeni postojeceg korisnika
 @users_api.route("/api/users/<id>", methods=["PUT"])
 def update_user(id):
-  # _id = id
-  # _json = request.json
-  # _name = _json['name']
-  # _sname = _json['sname']
-  # _addr = _json['addr']
-  # _city = _json['city']
-  # _country = _json['country']
-  # _phone = _json['phone']
-  # _email = _json['email']
-  # _pwd = _json['pwd']
+  with current_app.app_context():
+    user_data = {
+      "firstName": request.json.get("firstName", None),
+      "lastName": request.json.get("lastName", None),
+      "address": request.json.get("address", None),
+      "city": request.json.get("city", None),
+      "country": request.json.get("country", None),
+      "phone": request.json.get("phone", None),
+      "email": request.json.get("email", None),
+      "password": generate_password_hash(request.json.get("password", None)),
+    }
+
+    # TODO - Pre izmene proveriti da li su sva polja popunjena i validna
+    # Odraditi pomocu klase a ne dictionary-a kao gore
+
+    user = current_app.db.users.find_one_and_update(
+      { "_id": ObjectId(id) },
+      { "$set": {
+        "firstName": user_data["firstName"],
+        "lastName": user_data["lastName"],
+        "address": user_data["address"],
+        "city": user_data["city"],
+        "country": user_data["country"],
+        "phone": user_data["phone"],
+        "email": user_data["email"],
+        "password": user_data["password"],
+      }},
+      return_document=ReturnDocument.AFTER
+    )
+
+    if user == None:
+      return not_found()
+
+    # Konvertuje svaki id u string da bi obrisano $oid
+    user["_id"] = str(user["_id"])
+
+    response_data = {
+      "success": True,
+      "message": "User edited",
+      "data": user,
+    }
+    return Response(response=dumps(response_data), status=200, mimetype="application/json")
   
-  # user = db.fortesting.find_one({'_id':ObjectId(id)})
-  # if user == None:
-  #   return not_found()
-
-  # if _name and _email and _pwd and _sname and _addr and _city and _country and _phone and  request.method == 'PUT':
-  #   _hashed_pwd = generate_password_hash(_pwd)
-  #   db.fortesting.update_one({'_id': ObjectId(_id['$oid']) if '$oid' in _id else ObjectId(_id)}, {'$set': {'name':_name,'email':_email,'pwd':_hashed_pwd,'sname':_sname,'addr':_addr,'city':_city,'country':_country,'phone':_phone}})
-  #   resp = jsonify("User updated")
-  #   resp.status_code = 200
-  #   return resp
-  # else:
-  #   return not_found()
-  return f"Update existing user ({id})"
-
-#obrisi korisnika po id 
+# Obrisi korisnika
 @users_api.route("/api/users/<id>", methods=["DELETE"])
 def delete_user(id):
-  # db.fortesting.delete_one({'_id':ObjectId(id)})
-  # resp = jsonify("User deleted")  
-  # resp.status_code = 200
-  # return resp
-  return f"Delete existing user ({id})"
+  with current_app.app_context():
+    user = current_app.db.users.find_one_and_delete({ "_id": ObjectId(id) })
+
+    if user == None:
+      return not_found()
+
+    response_data = {
+      "success": True,
+      "message": "User deleted",
+      "data": {
+        "_id": str(id)
+      },
+    }
+    return Response(response=dumps(response_data), status=200, mimetype="application/json")
   
 @users_api.errorhandler(404)
-def not_found(error = None):
-  # message = {
-  #   'status': 404,
-  #   'message' : 'Not Found' + request.url
-  # }
-  # resp = jsonify(message)
-  # resp.status_code = 404
-  # return resp
-  return "Not found"
+def not_found(error=None):
+  response_data = {
+    "success": False,
+    "message": "User Not Found",
+    "endpoint": request.endpoint
+  }
+  return Response(response=dumps(response_data), status=404, mimetype="application/json")
