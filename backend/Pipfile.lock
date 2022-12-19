@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1e6dcb2055e48235dc444cfc753bcacfcf9395313c7e6c95327e169d78010881"
+            "sha256": "f72c140db8d512fb07ff5ff88566d020ad36050b7fa3fd8025f51f105c95f9fe"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -48,13 +48,21 @@
             "index": "pypi",
             "version": "==2.2.2"
         },
+        "flask-pymongo": {
+            "hashes": [
+                "sha256:620eb02dc8808a5fcb90f26cab6cba9d6bf497b15032ae3ca99df80366e33314",
+                "sha256:8a9577a2c6d00b49f21cb5a5a8d72561730364a2d745551a85349ab02f86fc73"
+            ],
+            "index": "pypi",
+            "version": "==2.3.0"
+        },
         "importlib-metadata": {
             "hashes": [
-                "sha256:d5059f9f1e8e41f80e9c56c2ee58811450c31984dfa625329ffd7c0dad88a73b",
-                "sha256:d84d17e21670ec07990e1044a99efe8d615d860fd176fc29ef5c306068fda313"
+                "sha256:0eafa39ba42bf225fc00e67f701d71f85aead9f878569caf13c3724f704b970f",
+                "sha256:404d48d62bba0b7a77ff9d405efd91501bef2e67ff4ace0bed40a0cf28c3c7cd"
             ],
             "markers": "python_version < '3.10'",
-            "version": "==5.1.0"
+            "version": "==5.2.0"
         },
         "itsdangerous": {
             "hashes": [
