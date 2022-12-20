@@ -1,17 +1,16 @@
 from flask import Flask
-from config.database import connect_database
+from flask_jwt_extended import JWTManager
+from mongoengine import connect
+from datetime import timedelta
 from api.users_api import users_api
 from api.auth_api import auth_api
-from flask_jwt_extended import JWTManager
-from datetime import timedelta
 import secrets
 
-db = connect_database("mongodb+srv://portfolio123:portfolio123@cluster0.kqej46w.mongodb.net/?retryWrites=true&w=majority", "Portfolio")
+connect(host="mongodb+srv://cluster0.kqej46w.mongodb.net", db="Portfolio", username="portfolio123", password="portfolio123")
 
 app = Flask(__name__)
 
 with app.app_context():
-  app.db = db
   app.jwt_manager = JWTManager(app)
   app.config["JWT_SECRET_KEY"] = secrets.token_hex(12);
   app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=7)

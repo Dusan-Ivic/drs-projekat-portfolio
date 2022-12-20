@@ -1,66 +1,53 @@
-from flask import Blueprint, current_app, request, Response
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from werkzeug.security import check_password_hash
+from flask import Blueprint, request, Response
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt
 from bson.json_util import dumps
-from bson.objectid import ObjectId
-from models.user_login import UserLogin
+from mongoengine import DoesNotExist
+from models.user import User
 
 auth_api = Blueprint("auth_api", __name__)
 
+# Uloguj korisnika
 @auth_api.route("/login", methods=["POST"])
 def login():
-  with current_app.app_context():
-    user_data = UserLogin(**request.get_json()).serialize() 
+  email = request.get_json()["email"]
+  password = request.get_json()["password"]
 
-    user = current_app.db.users.find_one({ "email": user_data["email"] })
+  try:
+    user = User.objects.get(email=email)
+  except DoesNotExist:
+    return not_found()
 
-    if user == None:
-      return not_found()
+  if user._data["password"] != password:
+    return unauthorized()
 
-    print("User['password']: " + user["password"]);
-    print("user_data['password']: " + user_data["password"]);
+  access_token = create_access_token(identity=str(user._data["id"]));
 
-    # Bez check_password_hash
-    if user["password"] != user_data["password"]:
-      return unauthorized();
+  response_data = {
+    "success": True,
+    "message": "User logged in",
+    "data": user._data,
+    "access_token": access_token
+  }
 
-    # Checking with a hash
-    # if not check_password_hash(user["password"], user_data["password"]):
-    #   return unauthorized()
+  return Response(response=dumps(response_data), status=200, mimetype="application/json")
 
-    # Konvertuje svaki id u string da bi obrisano $oid
-    user["_id"] = str(user["_id"])
-
-    access_token = create_access_token(identity=str(user["_id"]));
-
-    response_data = {
-      "success": True,
-      "message": "User logged in",
-      "data": user,
-      "access_token": access_token
-    }
-
-    return Response(response=dumps(response_data), status=200, mimetype="application/json")
-
+# Pregled profila
 @auth_api.route("/profile", methods=["GET"])
 @jwt_required()
 def my_profile():
-  token = get_jwt_identity()
-  with current_app.app_context():
-    user = current_app.db.users.find_one({ "_id": ObjectId(token) })
+  id = get_jwt()["sub"]
 
-    if user == None:
-      return not_found()
+  try:
+    user = User.objects.get(id=id)
+  except DoesNotExist:
+    return not_found()
 
-    # Konvertuje svaki id u string da bi obrisano $oid
-    user["_id"] = str(user["_id"])
+  response_data = {
+    "success": True,
+    "data": user._data,
+  }
 
-    response_data = {
-      "success": True,
-      "data": user,
-    }
-
-    return Response(response=dumps(response_data), status=200, mimetype="application/json")
+  return Response(response=dumps(response_data), status=200, mimetype="application/json")
   
 @auth_api.errorhandler(401)
 def unauthorized(error=None):
