@@ -27,7 +27,15 @@ def get_users():
 def register_user():
   user = User(**request.get_json())
   
-  user.save()
+  try:
+    user.save()
+  except (ValidationError, NotUniqueError) as err:
+    response_data = {
+      "success": False,
+      "message": "Validation failed",
+      "errors": err.to_dict(),
+    }
+    return Response(response=dumps(response_data), status=400, mimetype="application/json")
 
   response_data = {
     "success": True,
@@ -49,6 +57,16 @@ def update_user(id):
     user = User.objects.get(id=id)
   except DoesNotExist:
     return not_found()
+
+  try:
+    User(**request.get_json()).validate()
+  except ValidationError as err:
+    response_data = {
+      "success": False,
+      "message": "Validation failed",
+      "errors": err.to_dict(),
+    }
+    return Response(response=dumps(response_data), status=400, mimetype="application/json")
 
   user.update(**request.get_json())
   user.reload()
