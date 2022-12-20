@@ -32,7 +32,10 @@ def register_user():
   with current_app.app_context():
 
     user = User(**request.get_json()).serialize() 
-    user["password"] = generate_password_hash(user["password"])
+
+    #bez generate_password_hash-a
+    user["password"] = user["password"];
+    # user["password"] = generate_password_hash(user["password"])
 
     current_app.db.users.insert_one(user)
 

@@ -17,8 +17,16 @@ def login():
     if user == None:
       return not_found()
 
-    if not check_password_hash(user["password"], user_data["password"]):
-      return unauthorized()
+    print("User['password']: " + user["password"]);
+    print("user_data['password']: " + user_data["password"]);
+
+    # Bez check_password_hash
+    if user["password"] != user_data["password"]:
+      return unauthorized();
+
+    # Checking with a hash
+    # if not check_password_hash(user["password"], user_data["password"]):
+    #   return unauthorized()
 
     # Konvertuje svaki id u string da bi obrisano $oid
     user["_id"] = str(user["_id"])
