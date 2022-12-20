@@ -3,21 +3,21 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from werkzeug.security import check_password_hash
 from bson.json_util import dumps
 from bson.objectid import ObjectId
+from models.user_login import UserLogin
 
 auth_api = Blueprint("auth_api", __name__)
 
 @auth_api.route("/login", methods=["POST"])
 def login():
   with current_app.app_context():
-    email = request.json.get("email", None);
-    password = request.json.get("password", None);
+    user_data = UserLogin(**request.get_json()).serialize() 
 
-    user = current_app.db.users.find_one({ "email": email })
+    user = current_app.db.users.find_one({ "email": user_data["email"] })
 
     if user == None:
       return not_found()
 
-    if not check_password_hash(user["password"], password):
+    if not check_password_hash(user["password"], user_data["password"]):
       return unauthorized()
 
     # Konvertuje svaki id u string da bi obrisano $oid

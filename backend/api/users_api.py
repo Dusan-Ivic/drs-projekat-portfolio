@@ -3,6 +3,8 @@ from bson.json_util import dumps
 from pymongo import ReturnDocument
 from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash
+from models.user import User
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 users_api = Blueprint("users_api", __name__)
 
@@ -28,23 +30,13 @@ def get_users():
 @users_api.route("/api/users", methods=["POST"])
 def register_user():
   with current_app.app_context():
-    user = {
-      "firstName": request.json.get("firstName", None),
-      "lastName": request.json.get("lastName", None),
-      "address": request.json.get("address", None),
-      "city": request.json.get("city", None),
-      "country": request.json.get("country", None),
-      "phone": request.json.get("phone", None),
-      "email": request.json.get("email", None),
-      "password": generate_password_hash(request.json.get("password", None)),
-    }
 
-    # TODO - Pre dodavanja proveriti da li su sva polja popunjena
-    # Odraditi pomocu klase a ne dictionary-a kao gore
+    user = User(**request.get_json()).serialize() 
+    user["password"] = generate_password_hash(user["password"])
 
     current_app.db.users.insert_one(user)
 
-    # Konvertuje svaki id u string da bi obrisano $oid
+    # Konvertuje svaki id u string da bi obrisao $oid
     user["_id"] = str(user["_id"])
 
     response_data = {
@@ -57,22 +49,15 @@ def register_user():
 
 # Izmeni postojeceg korisnika
 @users_api.route("/api/users/<id>", methods=["PUT"])
+@jwt_required()
 def update_user(id):
+  auth_id = get_jwt_identity()
   with current_app.app_context():
-    user_data = {
-      "firstName": request.json.get("firstName", None),
-      "lastName": request.json.get("lastName", None),
-      "address": request.json.get("address", None),
-      "city": request.json.get("city", None),
-      "country": request.json.get("country", None),
-      "phone": request.json.get("phone", None),
-      "email": request.json.get("email", None),
-      "password": generate_password_hash(request.json.get("password", None)),
-    }
+    if auth_id != id:
+      return unauthorized() 
 
-    # TODO - Pre izmene proveriti da li su sva polja popunjena i validna
-    # Odraditi pomocu klase a ne dictionary-a kao gore
-
+    user_data = User(**request.get_json()).serialize()
+  
     user = current_app.db.users.find_one_and_update(
       { "_id": ObjectId(id) },
       { "$set": {
@@ -97,14 +82,19 @@ def update_user(id):
     response_data = {
       "success": True,
       "message": "User edited",
-      "data": user,
-    }
+      "data": user
+     }
     return Response(response=dumps(response_data), status=200, mimetype="application/json")
   
 # Obrisi korisnika
 @users_api.route("/api/users/<id>", methods=["DELETE"])
+@jwt_required()
 def delete_user(id):
+  auth_id = get_jwt_identity()
   with current_app.app_context():
+    if auth_id != id:
+      return unauthorized() 
+
     user = current_app.db.users.find_one_and_delete({ "_id": ObjectId(id) })
 
     if user == None:
@@ -127,3 +117,12 @@ def not_found(error=None):
     "endpoint": request.endpoint
   }
   return Response(response=dumps(response_data), status=404, mimetype="application/json")
+
+@users_api.errorhandler(401)
+def unauthorized(error=None):
+  response_data = {
+    "success": False,
+    "message": "Wrong or missing credentials",
+    "endpoint": request.endpoint
+  }
+  return Response(response=dumps(response_data), status=401, mimetype="application/json")
