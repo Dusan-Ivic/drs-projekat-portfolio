@@ -5,9 +5,9 @@ name = "pypi"
 
 [packages]
 flask = "*"
-pymongo = "*"
 flask-jwt-extended = "*"
 mongoengine = "*"
+bson = "*"
 
 [dev-packages]
 
