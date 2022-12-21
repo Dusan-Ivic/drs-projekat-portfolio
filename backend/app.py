@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 with app.app_context():
   app.jwt_manager = JWTManager(app)
-  app.config["JWT_SECRET_KEY"] = secrets.token_hex(12);
+  app.config["JWT_SECRET_KEY"] = '1c17f6480435a926f3601cae'; #Generisano preko secrets.token_hex(12);
   app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=7)
 
 app.register_blueprint(users_api)
