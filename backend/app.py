@@ -3,6 +3,7 @@ from flask_jwt_extended import JWTManager
 from mongoengine import connect
 from datetime import timedelta
 from api.users_api import users_api
+from api.transactions_api import transactions_api
 from api.auth_api import auth_api
 import secrets
 
@@ -16,6 +17,7 @@ with app.app_context():
   app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=7)
 
 app.register_blueprint(users_api)
+app.register_blueprint(transactions_api)
 app.register_blueprint(auth_api)
 
 if __name__ == "__main__":
