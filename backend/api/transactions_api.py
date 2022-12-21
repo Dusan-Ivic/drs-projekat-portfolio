@@ -20,12 +20,12 @@ def get_transactions():
     "data": transactions,
   }
 
-  return Response(response=dumps(response_data), status=200, mimetype="application/json")
+  return Response(response=dumps(response_data, default=str), status=200, mimetype="application/json")
 
 # Dodaj novu transakciju
 @transactions_api.route("/api/transactions", methods=["POST"])
-def register_transaction():
-  transaction = transaction(**request.get_json())
+def create_transaction():
+  transaction = Transaction(**request.get_json())
   
   try:
     transaction.save()
@@ -39,16 +39,17 @@ def register_transaction():
 
   response_data = {
     "success": True,
-    "message": "transaction registered",
+    "message": "Transaction created",
     "data": transaction._data,
   }
 
-  return Response(response=dumps(response_data), status=201, mimetype="application/json")
+  return Response(response=dumps(response_data, default=str), status=201, mimetype="application/json")
+
 # Obrisi transakciju
 @transactions_api.route("/api/transactions/<id>", methods=["DELETE"])
 def delete_transaction(id):
   try:
-    transaction = transaction.objects.get(id=id)
+    transaction = Transaction.objects.get(id=id)
   except DoesNotExist:
     return not_found()
 
@@ -56,7 +57,7 @@ def delete_transaction(id):
 
   response_data = {
     "success": True,
-    "message": "transaction deleted",
+    "message": "Transaction deleted",
     "data": {
       "id": str(transaction._data["id"])
     }
@@ -68,7 +69,7 @@ def delete_transaction(id):
 def not_found(error=None):
   response_data = {
     "success": False,
-    "message": "transaction Not Found",
+    "message": "Transaction Not Found",
     "endpoint": request.endpoint
   }
   return Response(response=dumps(response_data), status=404, mimetype="application/json")
