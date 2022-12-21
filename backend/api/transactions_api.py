@@ -43,7 +43,7 @@ def create_transaction():
     "data": transaction._data,
   }
 
-  return Response(response=dumps(response_data), status=201, mimetype="application/json")
+  return Response(response=dumps(response_data, default=str), status=201, mimetype="application/json")
 
 # Obrisi transakciju
 @transactions_api.route("/api/transactions/<id>", methods=["DELETE"])
