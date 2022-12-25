@@ -5,11 +5,13 @@ from datetime import timedelta
 from api.users_api import users_api
 from api.transactions_api import transactions_api
 from api.auth_api import auth_api
+from flask_cors import CORS
 import secrets
 
 connect(host="mongodb+srv://cluster0.kqej46w.mongodb.net", db="Portfolio", username="portfolio123", password="portfolio123")
 
-app = Flask(__name__)
+app = Flask(__name__);
+CORS(app);
 
 with app.app_context():
   app.jwt_manager = JWTManager(app)

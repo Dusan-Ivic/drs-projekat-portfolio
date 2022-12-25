@@ -8,6 +8,7 @@ flask = "*"
 flask-jwt-extended = "*"
 mongoengine = "*"
 bson = "*"
+flask-cors = "*"
 
 [dev-packages]
 
