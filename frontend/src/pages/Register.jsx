@@ -1,184 +1,175 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { register, reset } from "../features/auth/authSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import "../index.css";
+import Spinner from "../components/Spinner";
+import { isValidEmail } from "../utils/validators";
 
-const notify = () => toast.error("Niste popunili sva polja.");
+const notify = (err) => toast.error(err);
 
 const Register = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [country, setCountry] = useState("");
-  const [phoneN, setPhoneN] = useState("");
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    address: "",
+    city: "",
+    country: "",
+    phone: "",
+    email: "",
+    password: "",
+  });
 
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleName = (e) => {
-    setName(e.target.value);
-    setSubmitted(false);
-  };
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
 
-  const handleEmail = (e) => {
-    setEmail(e.target.value);
-    setSubmitted(false);
-  };
-
-  const handleLastName = (e) => {
-    setLastName(e.target.value);
-    setSubmitted(false);
-  };
-
-  const handleAddress = (e) => {
-    setAddress(e.target.value);
-    setSubmitted(false);
-  };
-
-  const handleCity = (e) => {
-    setCity(e.target.value);
-    setSubmitted(false);
-  };
-
-  const handleCountry = (e) => {
-    setCountry(e.target.value);
-    setSubmitted(false);
-  };
-
-  const handlePhoneN = (e) => {
-    setPhoneN(e.target.value);
-    setSubmitted(false);
-  };
-
-  const handlePassword = (e) => {
-    setPassword(e.target.value);
-    setSubmitted(false);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (
-      name === "" ||
-      email === "" ||
-      password === "" ||
-      lastName === "" ||
-      address === "" ||
-      city === "" ||
-      country === "" ||
-      phoneN === ""
-    ) {
-      setError(true);
-      notify();
-    } else {
-      setSubmitted(true);
-      setError(false);
-
-      const user = {
-        firstName: name,
-        lastName: lastName,
-        address: address,
-        city: city,
-        country: country,
-        phone: phoneN,
-        email: email,
-        password: password,
-      };
-
-      axios.post("http://127.0.0.1:5000/api/users", user).then(
-        (res) => {
-          // sessionStorage.setItem("user", JSON.stringify(res.data));
-          console.log(res.data);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
+  useEffect(() => {
+    if (isError) {
+      notify(message);
     }
+
+    if (isSuccess || user) {
+      navigate("/");
+    }
+
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
+
+  const onChange = (e) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
   };
-  //TO DO : Error handler za submit kod registracije.
-  //TO DO : Custom msg i border oko polja za svaki tip greske.
-  //TO DO : Redirect nakon uspesne registracije.
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    if (!formData.firstName) {
+      notify("First name is required");
+      return;
+    } else if (!formData.lastName) {
+      notify("Last name is required");
+      return;
+    } else if (!formData.email) {
+      notify("Email is required");
+      return;
+    } else if (!isValidEmail(formData.email)) {
+      notify("Email is not valid");
+      return;
+    } else if (!formData.password) {
+      notify("Password is required");
+      return;
+    } else if (!formData.address) {
+      notify("Address is required");
+      return;
+    } else if (!formData.city) {
+      notify("City is required");
+      return;
+    } else if (!formData.country) {
+      notify("Country is required");
+      return;
+    } else if (!formData.phone) {
+      notify("Phone is required");
+      return;
+    }
+
+    dispatch(register(formData));
+  };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
-    <>
+    <div className="form">
       <div>
         <h1>Register</h1>
       </div>
-      <form>
-        {/* Labels and inputs for form data */}
+      <form onSubmit={onSubmit}>
         <label className="label">First Name</label>
         <input
-          onChange={handleName}
-          className="input"
-          value={name}
           type="text"
+          name="firstName"
+          value={formData.firstName}
+          onChange={onChange}
+          className="input"
         />
 
         <label className="label">Last Name</label>
         <input
-          onChange={handleLastName}
-          className="input"
-          value={lastName}
           type="text"
+          name="lastName"
+          value={formData.lastName}
+          onChange={onChange}
+          className="input"
         />
 
         <label className="label">Email</label>
         <input
-          onChange={handleEmail}
-          className="input"
-          value={email}
           type="email"
+          name="email"
+          value={formData.email}
+          onChange={onChange}
+          className="input"
         />
 
         <label className="label">Password</label>
         <input
-          onChange={handlePassword}
-          className="input"
-          value={password}
           type="password"
+          name="password"
+          value={formData.password}
+          onChange={onChange}
+          className="input"
         />
 
         <label className="label">Address</label>
         <input
-          onChange={handleAddress}
-          className="input"
-          value={address}
           type="text"
+          name="address"
+          value={formData.address}
+          onChange={onChange}
+          className="input"
         />
 
         <label className="label">City</label>
         <input
-          onChange={handleCity}
-          className="input"
-          value={city}
           type="text"
+          name="city"
+          value={formData.city}
+          onChange={onChange}
+          className="input"
         />
 
         <label className="label">Country</label>
         <input
-          onChange={handleCountry}
-          className="input"
-          value={country}
           type="text"
+          name="country"
+          value={formData.country}
+          onChange={onChange}
+          className="input"
         />
 
         <label className="label">Phone Number</label>
         <input
-          onChange={handlePhoneN}
-          className="input"
-          value={phoneN}
           type="text"
+          name="phone"
+          value={formData.phone}
+          onChange={onChange}
+          className="input"
         />
 
-        <button onClick={handleSubmit} className="subBtn" type="submit">
+        <button type="submit" className="subBtn">
           Submit
         </button>
         <Toaster />
       </form>
-    </>
+    </div>
   );
 };
 
