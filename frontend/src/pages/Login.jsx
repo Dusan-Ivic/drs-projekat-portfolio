@@ -1,80 +1,92 @@
-import { useState } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { login, reset } from "../features/auth/authSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import "../index.css";
+import Spinner from "../components/Spinner";
+import { isValidEmail } from "../utils/validators";
 
-const notify = () => toast.error("Niste popunili sva polja.");
+const notify = (err) => toast.error(err);
 
 function Login() {
-  // States for registration
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-  // States for checking the errors
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  // Handling the email change
-  const handleEmail = (e) => {
-    setEmail(e.target.value);
-    setSubmitted(false);
-  };
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
 
-  // Handling the password change
-  const handlePassword = (e) => {
-    setPassword(e.target.value);
-    setSubmitted(false);
-  };
-
-  // Handling the form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (email === "" || password === "") {
-      setError(true);
-      notify();
-    } else {
-      setSubmitted(true);
-      setError(false);
-
-      const user = {
-        email: email,
-        password: password,
-      };
-
-      axios.post("http://127.0.0.1:5000/login", user).then(
-        (res) => {
-          sessionStorage.setItem("user", JSON.stringify(res.data));
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
+  useEffect(() => {
+    if (isError) {
+      notify(message);
     }
+
+    if (isSuccess || user) {
+      navigate("/");
+    }
+
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
+
+  const onChange = (e) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
   };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    if (!formData.email) {
+      notify("Email is required");
+      return;
+    } else if (!isValidEmail(formData.email)) {
+      notify("Email is not valid");
+      return;
+    } else if (!formData.password) {
+      notify("Password is required");
+      return;
+    }
+
+    dispatch(login(formData));
+  };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="form">
       <div>
         <h1>Login</h1>
       </div>
-      <form>
+      <form onSubmit={onSubmit}>
         <label className="label">Email</label>
         <input
-          onChange={handleEmail}
-          className="input"
-          value={email}
           type="email"
+          name="email"
+          value={formData.email}
+          onChange={onChange}
+          className="input"
         />
 
         <label className="label">Password</label>
         <input
-          onChange={handlePassword}
-          className="input"
-          value={password}
           type="password"
+          name="password"
+          value={formData.password}
+          onChange={onChange}
+          className="input"
         />
 
-        <button onClick={handleSubmit} className="subBtn" type="submit">
+        <button type="submit" className="subBtn">
           Submit
         </button>
         <Toaster />
