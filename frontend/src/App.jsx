@@ -24,24 +24,12 @@ export default function App() {
         <Container className="mt-3">
           <Routes>
             <Route exact path="/" element={<Home />} />
-            <Route exact path="/register" element={<Home />} />
+            <Route exact path="/register" element={<Register />} />
+            <Route exact path="/login" element={<Login />} />
           </Routes>
         </Container>
       </Router>
-
-      {
-        currentForm === "login" ? <Login/> : <Register/>
-      }
-
-      <div style={BUTTON_WRAPPER_STYLES} onClick={() => console.log('clicked')}>
-        <button onClick={() => setIsOpen(true)}>Open Modal</button>
-
-        <Modal open={isOpen} onClose={() => setIsOpen(false)}>
-          Fancy Modal
-        </Modal>
-      </div>
-    </>
-  
+    </> 
     );
 }
 

@@ -1,22 +1,19 @@
 import { useState } from 'react';
 import axios from 'axios';
+import "./style.css"
+import toast, { Toaster } from 'react-hot-toast';
+
+const notify = () => toast.error('Niste popunili sva polja.');
  
 function Login() {
  
   // States for registration
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
  
   // States for checking the errors
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(false);
- 
-  // Handling the name change
-  const handleName = (e) => {
-    setName(e.target.value);
-    setSubmitted(false);
-  };
  
   // Handling the email change
   const handleEmail = (e) => {
@@ -33,8 +30,9 @@ function Login() {
   // Handling the form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (name === '' || email === '' || password === '') {
+    if (email === '' || password === '') {
       setError(true);
+      notify()
     } else {
       setSubmitted(true);
       setError(false);
@@ -54,51 +52,13 @@ function Login() {
       })
     }
   };
- 
-  // Showing success message
-  const successMessage = () => {
-    return (
-      <div
-        className="success"
-        style={{
-          display: submitted ? '' : 'none',
-        }}>
-        <h1>User {name} successfully registered!!</h1>
-      </div>
-    );
-  };
- 
-  // Showing error message if error is true
-  const errorMessage = () => {
-    return (
-      <div
-        className="error"
-        style={{
-          display: error ? '' : 'none',
-        }}>
-        <h1>Please enter all the fields</h1>
-      </div>
-    );
-  };
- 
+  
   return (
     <div className="form">
       <div>
-        <h1>User Registration</h1>
-      </div>
- 
-      {/* Calling to the methods */}
-      <div className="messages">
-        {errorMessage()}
-        {successMessage()}
-      </div>
- 
+        <h1>Login</h1>
+      </div>  
       <form>
-        {/* Labels and inputs for form data */}
-        <label className="label">Name</label>
-        <input onChange={handleName} className="input"
-          value={name} type="text" />
- 
         <label className="label">Email</label>
         <input onChange={handleEmail} className="input"
           value={email} type="email" />
@@ -107,9 +67,10 @@ function Login() {
         <input onChange={handlePassword} className="input"
           value={password} type="password" />
  
-        <button onClick={handleSubmit} className="btn" type="submit">
+        <button onClick={handleSubmit} className="subBtn" type="submit">
           Submit
         </button>
+        <Toaster/>
       </form>
     </div>
   );
