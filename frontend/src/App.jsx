@@ -5,9 +5,17 @@ import Home from "./pages/Home";
 import Login  from "../src/components/Login";
 import { Register } from "../src/components/Register";
 import React, { useState } from "react";
+import Modal from "./components/Modal";
 
-function App() {
+
+const BUTTON_WRAPPER_STYLES = {
+  position: 'relative',
+  zIndex: 1
+}
+
+export default function App() {
   const [currentForm, setCurrentForm] = useState('login');
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <>
@@ -24,9 +32,17 @@ function App() {
       {
         currentForm === "login" ? <Login/> : <Register/>
       }
+
+      <div style={BUTTON_WRAPPER_STYLES} onClick={() => console.log('clicked')}>
+        <button onClick={() => setIsOpen(true)}>Open Modal</button>
+
+        <Modal open={isOpen} onClose={() => setIsOpen(false)}>
+          Fancy Modal
+        </Modal>
+      </div>
     </>
   
     );
 }
 
-export default App;
+//export default App;

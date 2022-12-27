@@ -38,25 +38,17 @@ function Login() {
     } else {
       setSubmitted(true);
       setError(false);
-      console.log(name);
-      console.log(email);
-      console.log(password);
 
       const user = {
-        email: "email@gmail.com",
-        password: "password"
+        email: email,
+        password: password
       }
 
-      const smt = JSON.stringify(user);
-      const options = {
-        headers: {"content-type": "application/json"}
-      }
-
-      axios.post('http://127.0.0.1:5000/login', smt, options)
+      axios.post('http://127.0.0.1:5000/login', user)
       .then(res => {
         const persons = res.data;
         console.log(persons);
-        //this.setState({ persons });
+        sessionStorage.setItem('token', res.data["access_token"])
       }, (error) => {
         console.log(error);
       })

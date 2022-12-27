@@ -13,16 +13,16 @@ export const Register = () => {
 
   return (
     <>
-    <form onSubmit={handleSubmit}>
-      <label for="email">Email:</label>
-      <input name="email" id="email" type="email" placeholder="email@email.com"></input>
-      <label for="password">Password:</label>
-      <input name="password" id="password" type="password" placeholder="*******"></input>
-      <label for="name">Name:</label>
-      <input name="password" id="password" type="password" placeholder="*******"></input>
-      <button type="submit">Log in</button>
-    </form>
-    <button>Don't have an account? Register.</button>
+      <form onSubmit={handleSubmit}>
+        <label for="email">Email:</label>
+        <input name="email" id="email" type="email" placeholder="email@email.com"></input>
+        <label for="password">Password:</label>
+        <input name="password" id="password" type="password" placeholder="*******"></input>
+        <label for="name">Name:</label>
+        <input name="password" id="password" type="password" placeholder="*******"></input>
+        <button type="submit">Log in</button>
+      </form>
+      <button>Don't have an account? Register.</button>
     </>
   )
 }
