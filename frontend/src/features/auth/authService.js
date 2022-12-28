@@ -1,14 +1,10 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:5000";
+// const baseUrl = "http://localhost:5000";
+const baseUrl = "";
 
 const register = async (userData) => {
   const res = await axios.post(baseUrl + "/api/users", userData);
-
-  if (res.data) {
-    localStorage.setItem("user", JSON.stringify(res.data));
-    localStorage.setItem("access_token", res.data["access_token"]);
-  }
 
   return res.data;
 };
