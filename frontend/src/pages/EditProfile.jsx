@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { editProfile, register, reset } from "../features/auth/authSlice";
+import { editProfile } from "../features/auth/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "../index.css";
@@ -10,9 +10,7 @@ import { isValidEmail } from "../utils/validators";
 const notify = (err) => toast.error(err);
 
 const EditProfile = () => {
-  const { user, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.auth
-  );
+  const { user, isLoading } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
     firstName: user.data.firstName,
@@ -28,20 +26,6 @@ const EditProfile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-
-  // useEffect(() => {
-  //   if (isError) {
-  //     notify(message);
-  //   }
-
-  //   if (isSuccess || user) {
-  //     navigate("/profile");
-  //   }
-
-  //   dispatch(reset());
-  // }, [user, isError, isSuccess, message, navigate, dispatch]);
-
-  //umesto handle posebno
   const onChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -82,6 +66,8 @@ const EditProfile = () => {
     }
 
     dispatch(editProfile(formData));
+
+    navigate("/profile");
   };
 
   if (isLoading) {

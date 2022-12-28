@@ -49,11 +49,10 @@ export const logout = createAsyncThunk("auth/logout", async () => {
 export const editProfile = createAsyncThunk(
   "auth/editProfile",
   async (userData, thunkAPI) => {
-    try {      
-      const token = thunkAPI.getState().auth.user["access_token"];
+    try {
+      const token = localStorage.getItem("access_token");
       const id = thunkAPI.getState().auth.user.data["id"]["$oid"];
       return await authService.editProfile(userData, token, id);
-
     } catch (error) {
       const message =
         (error.response &&
