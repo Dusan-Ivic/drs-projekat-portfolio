@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { register, reset } from "../features/auth/authSlice";
+import { editProfile } from "../features/auth/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "../index.css";
@@ -9,36 +9,22 @@ import { isValidEmail } from "../utils/validators";
 
 const notify = (err) => toast.error(err);
 
-const Register = () => {
+const EditProfile = () => {
+  const { user, isLoading } = useSelector((state) => state.auth);
+
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    address: "",
-    city: "",
-    country: "",
-    phone: "",
-    email: "",
-    password: "",
+    firstName: user.data.firstName,
+    lastName: user.data.lastName,
+    address: user.data.address,
+    city: user.data.city,
+    country: user.data.country,
+    phone: user.data.phone,
+    email: user.data.email,
+    password: user.data.password,
   });
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const { user, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.auth
-  );
-
-  useEffect(() => {
-    if (isError) {
-      notify(message);
-    }
-
-    if (isSuccess || user) {
-      navigate("/");
-    }
-
-    dispatch(reset());
-  }, [user, isError, isSuccess, message, navigate, dispatch]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -79,7 +65,9 @@ const Register = () => {
       return;
     }
 
-    dispatch(register(formData));
+    dispatch(editProfile(formData));
+
+    navigate("/profile");
   };
 
   if (isLoading) {
@@ -89,7 +77,7 @@ const Register = () => {
   return (
     <div className="form">
       <div>
-        <h1>Register</h1>
+        <h1>Edit Profile</h1>
       </div>
       <form onSubmit={onSubmit}>
         <label className="label">First Name</label>
@@ -173,4 +161,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default EditProfile;

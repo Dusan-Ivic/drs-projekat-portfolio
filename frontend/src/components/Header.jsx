@@ -17,39 +17,40 @@ function Header() {
     navigate("/");
   };
 
-const { user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
 
   return (
     <>
       <Navbar bg="dark" variant="dark" expand="md">
         <Container>
-          <Navbar.Brand href="#home">Portfolio Project</Navbar.Brand>
+          <Navbar.Brand as={Link} to="/">
+            Portfolio Project
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              { user ? (
+              <Nav.Link as={Link} to="/">
+                Home
+              </Nav.Link>
+            </Nav>
+            <Nav>
+              {user ? (
                 <>
-                  <Nav.Link as={Link} to="/">
-                    Home
-                  </Nav.Link>
-                  <Nav.Link as={Link}  onClick={onLogout}  to="/logout">
-                    Logout
+                  <Nav.Link onClick={onLogout}>Logout</Nav.Link>
+                  <Nav.Link as={Link} to="/profile">
+                    Profile
                   </Nav.Link>
                 </>
-              ):(
-              <>
-                <Nav.Link as={Link} to="/">
-                  Home
-                </Nav.Link>
-                <Nav.Link as={Link} to="/register">
-                  Register
-                </Nav.Link>
-                <Nav.Link as={Link} to="/login">
-                  Login
-                </Nav.Link>
-              </>
-              )
-              }
+              ) : (
+                <>
+                  <Nav.Link as={Link} to="/register">
+                    Register
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/login">
+                    Login
+                  </Nav.Link>
+                </>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>
