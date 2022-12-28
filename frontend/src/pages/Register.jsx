@@ -40,6 +40,7 @@ const Register = () => {
     dispatch(reset());
   }, [user, isError, isSuccess, message, navigate, dispatch]);
 
+  //umesto handle posebno
   const onChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
