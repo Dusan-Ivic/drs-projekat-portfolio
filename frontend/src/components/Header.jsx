@@ -37,6 +37,9 @@ function Header() {
               {user ? (
                 <>
                   <Nav.Link onClick={onLogout}>Logout</Nav.Link>
+                  <Nav.Link as={Link} to="/profile">
+                    Profile
+                  </Nav.Link>
                 </>
               ) : (
                 <>
