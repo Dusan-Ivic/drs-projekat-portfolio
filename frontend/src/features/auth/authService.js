@@ -28,13 +28,13 @@ const logout = () => {
   localStorage.removeItem("user");
 };
 
-const editProfile = async (userData, token) => {
+const editProfile = async (userData, token, id) => {
   const config = {
     headers: {
-      Authorization: "Bearer ${token}",
+      Authorization: "Bearer " + token,
     },
   };
-  const res = await axios.put(baseUrl + "/api/users", userData, config);
+  const res = await axios.put(baseUrl + "/api/users/"+ id, userData, config);
 
   if (res.data) {
     console.log(res.data);

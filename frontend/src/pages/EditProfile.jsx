@@ -10,35 +10,36 @@ import { isValidEmail } from "../utils/validators";
 const notify = (err) => toast.error(err);
 
 const EditProfile = () => {
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
+
   const [formData, setFormData] = useState({
-    firstName: user.firstName,
-    lastName: user.lastName,
-    address: user.address,
-    city: user.city,
-    country: user.country,
-    phone: user.phone,
-    email: user.email,
-    password: user.password,
+    firstName: user.data.firstName,
+    lastName: user.data.lastName,
+    address: user.data.address,
+    city: user.data.city,
+    country: user.data.country,
+    phone: user.data.phone,
+    email: user.data.email,
+    password: user.data.password,
   });
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { user, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.auth
-  );
 
-  useEffect(() => {
-    if (isError) {
-      notify(message);
-    }
+  // useEffect(() => {
+  //   if (isError) {
+  //     notify(message);
+  //   }
 
-    if (isSuccess || user) {
-      navigate("/profile");
-    }
+  //   if (isSuccess || user) {
+  //     navigate("/profile");
+  //   }
 
-    dispatch(reset());
-  }, [user, isError, isSuccess, message, navigate, dispatch]);
+  //   dispatch(reset());
+  // }, [user, isError, isSuccess, message, navigate, dispatch]);
 
   //umesto handle posebno
   const onChange = (e) => {
