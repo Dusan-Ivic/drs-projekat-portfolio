@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const baseUrl = "http://localhost:5000";
-const baseUrl = "";
+const baseUrl = "http://localhost:5000";
+//const baseUrl = "";
 
 const register = async (userData) => {
   const res = await axios.post(baseUrl + "/api/users", userData);
@@ -39,6 +39,7 @@ const editProfile = async (userData, token, id) => {
 
   return res.data;
 };
+
 const authService = {
   register,
   login,
