@@ -4,7 +4,7 @@ from bson.json_util import dumps
 from mongoengine import ValidationError, NotUniqueError, DoesNotExist
 from models.user import User
 
-users_api = Blueprint("users_api", __name__)
+users_api = Blueprint ("users_api", __name__)
 
 # Vrati sve korisnike
 @users_api.route("/api/users", methods=["GET"])

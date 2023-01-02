@@ -36,6 +36,9 @@ function Header() {
             <Nav>
               {user ? (
                 <>
+                  <Nav.Link as={Link} to="/currencies">
+                    Currencies
+                  </Nav.Link>
                   <Nav.Link onClick={onLogout}>Logout</Nav.Link>
                   <Nav.Link as={Link} to="/profile">
                     Profile
