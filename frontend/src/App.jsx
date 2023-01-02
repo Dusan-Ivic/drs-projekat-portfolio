@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import React from "react";
 import Currencies from "./pages/Currencies";
+import Info from "./pages/Info";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route exact path="/profile" element={<Profile />} />
             <Route path="/profile/edit" element={<EditProfile />} />
             <Route exact path="/currencies" element={<Currencies />} />
+            <Route path="/currencies/:id" element={<Info />} />
           </Routes>
         </Container>
       </Router>

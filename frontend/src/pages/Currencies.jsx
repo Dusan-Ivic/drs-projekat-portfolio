@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "../index.css";
+import { Link } from "react-router-dom";
 
 // https://api.coincap.io/v2/assets?limit=20
 
@@ -13,19 +14,13 @@ function Currencies() {
         `https://api.coincap.io/v2/assets?limit=${limit}`
       );
       const data = await res.json();
-      console.log(data.data);
+      //console.log(data.data);
       setCoins(data.data);
     };
 
     fetchCoins();
   }, [limit]);
 
-  const fetchById = async (e) => {
-    let arg = e.target.getAttribute("arg1");
-    const test = await fetch(`https://api.coincap.io/v2/assets/${arg}`);
-    const data = await test.json();
-    console.log(data.data);
-  };
   const handleRefresh = () => {
     setLimit(4);
     window.scrollTo(0, 0);
@@ -50,9 +45,9 @@ function Currencies() {
               <td>{name}</td>
               <td>${parseFloat(priceUsd).toFixed(2)}</td>
               <td>
-                <button className="InfoButton" arg1={id} onClick={fetchById}>
-                  Info
-                </button>
+                <Link to={id}>
+                  <button className="InfoButton">Info</button>
+                </Link>
               </td>
             </tr>
           ))}
