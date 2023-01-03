@@ -1,7 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* podvuceno ignorisi, buni se zbog verzija | mozete dodati ignore u vsc*/
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+@layer components {
+  .wrapper-container {
+    @apply max-w-5xl mx-auto px-2;
+  }
 }
 
 input[type="text"],
