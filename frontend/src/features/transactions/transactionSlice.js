@@ -76,6 +76,7 @@ export const transactionSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getTransactions.fulfilled, (state, action) => {
+        state.transactions = action.payload.data;
         state.isSuccess = true;
         state.isLoading = false;
       })

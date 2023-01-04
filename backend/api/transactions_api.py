@@ -25,7 +25,7 @@ def get_transactions():
 
   users_transactions=[]
   for transaction in transactions:
-    if str(transaction.userid) == auth_id:
+    if str(transaction["userid"]) == auth_id:
       users_transactions.append(transaction)
 
   response_data = {

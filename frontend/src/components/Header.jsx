@@ -43,8 +43,8 @@ function Header() {
                   <Nav.Link as={Link} to="/profile">
                     Profile
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/transactions">
-                    Transactions
+                  <Nav.Link as={Link} to="/transactions/create">
+                    Create Transaction
                   </Nav.Link>
                   <Nav.Link as={Link} to="/portfolio">
                     Portfolio
