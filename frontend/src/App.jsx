@@ -10,6 +10,7 @@ import React from "react";
 import Currencies from "./pages/Currencies";
 //import Coin from "./components/Coin";
 import Info from "./pages/Info";
+import Transactions from "./pages/Transactions";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/profile/edit" element={<EditProfile />} />
             <Route exact path="/currencies" element={<Currencies />} />
             <Route path="/coin/:id" element={<Info />} />
+            <Route path="/transactions/:id" element={<Transactions />} />
           </Routes>
         </Container>
       </Router>
