@@ -10,7 +10,8 @@ import React from "react";
 import Currencies from "./pages/Currencies";
 //import Coin from "./components/Coin";
 import Info from "./pages/Info";
-import Transactions from "./pages/Transactions";
+import CreateTransactions from "./pages/CreateTransaction";
+import Portfolio from "./pages/Portfolio";
 
 function App() {
   return (
@@ -23,10 +24,16 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route exact path="/profile" element={<Profile />} />
+
             <Route path="/profile/edit" element={<EditProfile />} />
             <Route exact path="/currencies" element={<Currencies />} />
             <Route path="/coin/:id" element={<Info />} />
-            <Route path="/transactions/:id" element={<Transactions />} />
+
+            <Route exact path="/portfolio" element={<Portfolio />} />
+            <Route
+              path="/transactions/create"
+              element={<CreateTransactions />}
+            />
           </Routes>
         </Container>
       </Router>
