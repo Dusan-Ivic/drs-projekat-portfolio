@@ -11,7 +11,7 @@ const notify = (err) => toast.error(err);
 
 const CreateTransaction = () => {
   const [formData, setFormData] = useState({
-    transaction_type: "buy",
+    transaction_type: "",
     crypto_currency: "",
     timestamp: "",
     price: "",
@@ -19,7 +19,7 @@ const CreateTransaction = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const test = 0;
   const { isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   );
@@ -77,6 +77,22 @@ const CreateTransaction = () => {
 
         <label className="label">CENA</label>
         <input type="text" name="price" onChange={onChange} className="input" />
+
+        <label>Buy</label>
+        <input
+          type="radio"
+          name="transaction_type"
+          onChange={onChange}
+          value="buy"
+        />
+        <label>Sell</label>
+        <input
+          type="radio"
+          name="transaction_type"
+          onChange={onChange}
+          value="sell"
+        />
+
         <button type="submit" className="subBtn">
           Submit
         </button>

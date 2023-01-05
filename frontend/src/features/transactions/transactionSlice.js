@@ -47,6 +47,7 @@ export const getTransactions = createAsyncThunk(
     }
   }
 );
+
 export const transactionSlice = createSlice({
   name: "transactions",
   initialState,

@@ -69,8 +69,7 @@ def create_transaction():
 
   return Response(response=dumps(response_data, default=str), status=201, mimetype="application/json")
 
-# Obrisi transakciju // sell
-# nakon sto vratis sve sta lik ima/ ako ima izbrises iz liste, ako nema kazes bro u poor
+# Obrisi transakciju 
 @transactions_api.route("/api/transactions/<id>", methods=["DELETE"])
 def delete_transaction(id):
   try:
