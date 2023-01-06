@@ -12,6 +12,7 @@ import Currencies from "./pages/Currencies";
 import Info from "./pages/Info";
 import CreateTransactions from "./pages/CreateTransaction";
 import Portfolio from "./pages/Portfolio";
+import Overview from "./pages/Overview";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
               path="/transactions/create"
               element={<CreateTransactions />}
             />
+            <Route path="/overview" element={<Overview/>}/>
           </Routes>
         </Container>
       </Router>
