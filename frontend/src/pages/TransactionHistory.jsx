@@ -7,6 +7,7 @@ import {
 } from "../features/transactions/transactionSlice";
 import Spinner from "../components/Spinner";
 import axios from "axios";
+
 //portfolio ce biti samo transaction history/ a u portfolio ce biti grupisani svi transactions istog coina u jedan value
 const TransactionHistory = () => {
   const { user } = useSelector((state) => state.auth);
