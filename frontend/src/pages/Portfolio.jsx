@@ -12,7 +12,10 @@ const Portfolio = () => {
     const { transactions, isLoading, isError, message } = useSelector(
         (state) => state.transactions
       );
-    var checkedCoins = [];
+    var uniqueCurrencies = [];
+    let type = [];
+    let crypto_currency = [];
+    let price = [];
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -22,7 +25,7 @@ const Portfolio = () => {
         }
     
         dispatch(getTransactions());
-    
+        calculations();
     
         return () => {
           dispatch(reset);
@@ -33,29 +36,44 @@ const Portfolio = () => {
         return <Spinner />;
       }
 
-    
-    const calculations = () => {
-        // transactions.map((transaction) => ())
-
-
-        let allTransactionName =  transactions.map((transaction) => (transaction["crypto_currency"]))
-        console.log(allTransactionName);
-        
-        // checkedCoins.push(temp)
-        // console.log(checkedCoins[0]);
-
+    function calculations(){
+        if(!isLoading){
+            console.log(transactions);
+            transactions.forEach(element => {
+                let objectq = {crypto_currency:element.crypto_currency, price_buy:"", price_sell:"", type:element.transaction_type};
+                if(!uniqueCurrencies.some(item=>item.crypto_currency === element.crypto_currency)){
+                    if(objectq.type === 'TransactionType.BUY'){
+                        objectq.price_buy = parseInt(element.price);
+                        uniqueCurrencies.push(objectq);
+                    } else if (objectq.type === 'TransactionType.SELL') {
+                        objectq.price_sell = parseInt(element.price);
+                        uniqueCurrencies.push(objectq);
+                    }
+                } else {
+                    for(let i = 0; i < uniqueCurrencies.length; i++){
+                        if(uniqueCurrencies[i].type  === 'TransactionType.BUY'){
+                            uniqueCurrencies[i].price_buy += parseInt(element.price);
+                        } else {
+                            uniqueCurrencies[i].price_sell += parseInt(element.price);
+                        }
+                    }
+                }
+            console.log(uniqueCurrencies);
+            return uniqueCurrencies;
+        });
+        }   
     }
-    console.log(transactions)
 
     return(
         <>
-            <button onClick={calculations}>BUTTON</button>
-            <div onLoad={calculations}>
-            {transactions.map((transaction) => (
+            {/* <button onClick={calculations}>BUTTON</button> */}
+            <div>
+            {/* {transactions.map((transaction) => (
                 <div id={transaction["id"]["$oid"]} key={transaction["id"]["$oid"]}>
                     <div>Type: {transaction.transaction_type}</div>
                 </div>
-            ))}
+            ))} */}
+            {uniqueCurrencies.map((something) => (<div>SIOPADHJIOSADH</div>))}
             </div>
         </>
     )
