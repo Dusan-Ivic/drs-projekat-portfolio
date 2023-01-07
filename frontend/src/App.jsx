@@ -11,8 +11,8 @@ import Currencies from "./pages/Currencies";
 //import Coin from "./components/Coin";
 import Info from "./pages/Info";
 import CreateTransactions from "./pages/CreateTransaction";
+import TransactionHistory from "./pages/TransactionHistory";
 import Portfolio from "./pages/Portfolio";
-import Overview from "./pages/Overview";
 
 function App() {
   return (
@@ -30,12 +30,12 @@ function App() {
             <Route exact path="/currencies" element={<Currencies />} />
             <Route path="/coin/:id" element={<Info />} />
 
-            <Route exact path="/portfolio" element={<Portfolio />} />
+            <Route exact path="/TransactionHistory" element={<TransactionHistory />} />
             <Route
               path="/transactions/create"
               element={<CreateTransactions />}
             />
-            <Route path="/overview" element={<Overview/>}/>
+            <Route path="/portfolio" element={<Portfolio/>}/>
           </Routes>
         </Container>
       </Router>
