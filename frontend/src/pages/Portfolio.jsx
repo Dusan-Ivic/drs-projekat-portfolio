@@ -3,101 +3,64 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   getTransactions,
+  getTransactionsCalculation,
   reset,
 } from "../features/transactions/transactionSlice";
 import Spinner from "../components/Spinner";
 import axios from "axios";
 import "../index.css";
 
+const baseUrl = "http://localhost:5000";
+const token = localStorage.getItem("access_token");
+
 const Portfolio = () => {
-  const { transactions, isLoading, isError, message } = useSelector(
+  const { isLoading, isError, message } = useSelector(
     (state) => state.transactions
   );
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [resp, setResp] = useState([]);
 
-  const [values, setValues] = useState([]);
-  const [netValues, setnetValues] = useState(0);
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
 
   useEffect(() => {
     if (isError) {
       console.log(message);
     }
 
-    dispatch(getTransactions());
-    calculations();
+    axios
+      .get(baseUrl + `/api/transactions/calculations`, config)
+      .then((response) => setResp(response.data));
 
     return () => {
       dispatch(reset);
     };
   }, [isError, message, dispatch]);
 
-  if (isLoading) {
+  if (resp.length == 0) {
     return <Spinner />;
   }
 
-  function calculations() {
-    var uniqueCurrencies = [];
-    if (!isLoading) {
-      console.log(transactions);
-      var netw = 0;
-      transactions.forEach((element) => {
-        let temp = "";
-        if (element.transaction_type == "TransactionType.BUY") {
-          temp = "buy";
-        } else {
-          temp = "sell";
-        }
-        let objectq = {
-          crypto_currency: element.crypto_currency,
-          price_buy: "",
-          price_sell: "",
-          type: temp,
-        };
-        if (
-          !uniqueCurrencies.some(
-            (item) => item.crypto_currency === element.crypto_currency
-          )
-        ) {
-          if (objectq.type === "buy") {
-            objectq.price_buy = parseInt(element.price);
-            netw = netw + parseInt(element.price);
-            uniqueCurrencies.push(objectq);
-          } else if (objectq.type === "sell") {
-            objectq.price_sell = parseInt(element.price);
-            uniqueCurrencies.push(objectq);
-          }
-        } else {
-          for (let i = 0; i < uniqueCurrencies.length; i++) {
-            if (uniqueCurrencies[i].type === "buy") {
-              uniqueCurrencies[i].price_buy += parseInt(element.price);
-              netw = netw + parseInt(element.price);
-            } else if (uniqueCurrencies[i].type === "sell") {
-              uniqueCurrencies[i].price_sell += parseInt(element.price);
-            }
-          }
-        }
-        console.log(uniqueCurrencies);
-        setValues(uniqueCurrencies);
-        setnetValues(netw);
-      });
-    }
-  }
+  console.log(resp);
 
   return (
     <>
       <div>
-        {values.map((something) => (
-          <div>
-            <div>1.{something.type}</div>
-            <div>2. {something.price_buy}</div>
-            <div>3. {something.price_sell}</div>
-            <div>4. {something.crypto_currency}</div>
+        {resp.data.map((res) => (
+          <div id={res["name"]} key={res["name"]}>
+            <div>
+              {res.name}: Kupili ste {res.amount_bought} koina, placeni su{" "}
+              {res.bought}$. Prodali ste: {res.amount_sold} koina. Ukupna
+              novcana vrednost prodatih koina je {res.sold}${" "}
+            </div>
             <br></br>
+            <hr />
           </div>
         ))}
       </div>
-      <div>{netValues}$</div>
     </>
   );
 };

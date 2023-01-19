@@ -43,20 +43,24 @@ const TransactionHistory = () => {
   if (isLoading) {
     return <Spinner />;
   }
-
+  //TO DO: Treba da vraca samo buy ili sell // ubaciti datum
   return (
     <div>
       {transactions.map((transaction) => (
         <div id={transaction["id"]["$oid"]} key={transaction["id"]["$oid"]}>
-          <div>Type: {transaction.transaction_type}</div>
+          <div>Coin Name: {transaction.crypto_currency}</div>
           <br></br>
-          <div>Name: {transaction.crypto_currency}</div>
+          <div>Type of transaction: {transaction.transaction_type}</div>
           {/* <div>Time: {transaction.timestamp}</div> */}
           <br></br>
-          <div>Price: {transaction.price}</div>
+          <div>Price at the time of transaction: {transaction.price}$</div>
           <br></br>
-          <button id2={transaction["id"]["$oid"]} onClick={deleteTransaction}>
-            Delete
+          <button
+            className="delBtn"
+            id2={transaction["id"]["$oid"]}
+            onClick={deleteTransaction}
+          >
+            Delete Transaction
           </button>
           <br></br>
           <br></br>

@@ -64,9 +64,6 @@ function Login() {
 
   return (
     <div className="form">
-      <div>
-        <h1>Login</h1>
-      </div>
       <form onSubmit={onSubmit}>
         <label className="label">Email</label>
         <input
@@ -87,7 +84,7 @@ function Login() {
         />
 
         <button type="submit" className="subBtn">
-          Submit
+          Login
         </button>
         <Toaster />
       </form>

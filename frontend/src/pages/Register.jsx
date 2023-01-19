@@ -88,9 +88,6 @@ const Register = () => {
 
   return (
     <div className="form">
-      <div>
-        <h1>Register</h1>
-      </div>
       <form onSubmit={onSubmit}>
         <label className="label">First Name</label>
         <input
@@ -165,7 +162,7 @@ const Register = () => {
         />
 
         <button type="submit" className="subBtn">
-          Submit
+          Register
         </button>
         <Toaster />
       </form>

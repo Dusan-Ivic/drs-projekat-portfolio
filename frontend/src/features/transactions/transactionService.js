@@ -26,6 +26,8 @@ const getTransactions = async (token) => {
   const res = await axios.get(baseUrl + `/api/transactions`, config);
   return res.data;
 };
+
+//get calc
 const transactionService = {
   createTransaction,
   getTransactions,

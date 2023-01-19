@@ -15,6 +15,7 @@ const CreateTransaction = () => {
     crypto_currency: "",
     timestamp: "",
     price: "",
+    kolicina: 0,
   });
 
   const navigate = useNavigate();
@@ -52,14 +53,11 @@ const CreateTransaction = () => {
   if (isLoading) {
     return <Spinner />;
   }
-
+  //TO DO: ubaciti listu koina sa api.Ubaciti datum.
   return (
     <div className="form">
-      <div>
-        <h1>KUPUJEMPRODAJEMBRATE</h1>
-      </div>
       <form onSubmit={onSubmit}>
-        <label className="label">COIN NAME</label>
+        <label className="label">Select Coin:</label>
         <input
           type="text"
           name="crypto_currency"
@@ -67,7 +65,7 @@ const CreateTransaction = () => {
           className="input"
         />
 
-        <label className="label">timestamp</label>
+        <label className="label">Select Date:</label>
         <input
           type="text"
           name="timestamp"
@@ -75,24 +73,37 @@ const CreateTransaction = () => {
           className="input"
         />
 
-        <label className="label">CENA</label>
+        <label className="label">Amount of coins bought:</label>
+        <input
+          type="number"
+          name="kolicina"
+          step="any"
+          onChange={onChange}
+          className="input"
+        />
+        <br></br>
+
+        <label className="label">Price:</label>
         <input type="text" name="price" onChange={onChange} className="input" />
 
-        <label>Buy</label>
+        <label>Buy?</label>
         <input
           type="radio"
           name="transaction_type"
           onChange={onChange}
           value="buy"
         />
-        <label>Sell</label>
+        <br></br>
+        <br></br>
+        <label>Sell?</label>
         <input
           type="radio"
           name="transaction_type"
           onChange={onChange}
           value="sell"
         />
-
+        <br></br>
+        <br></br>
         <button type="submit" className="subBtn">
           Submit
         </button>
