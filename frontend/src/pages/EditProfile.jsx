@@ -76,9 +76,6 @@ const EditProfile = () => {
 
   return (
     <div className="form">
-      <div>
-        <h1>Edit Profile</h1>
-      </div>
       <form onSubmit={onSubmit}>
         <label className="label">First Name</label>
         <input

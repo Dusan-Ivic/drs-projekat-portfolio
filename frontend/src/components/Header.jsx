@@ -36,21 +36,30 @@ function Header() {
             <Nav>
               {user ? (
                 <>
+                  <Nav.Link as={Link} to="/TransactionHistory">
+                    Transaction History
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/portfolio">
+                    Portfolio
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/transactions/create">
+                    Create Transaction
+                  </Nav.Link>
                   <Nav.Link as={Link} to="/currencies">
                     Currencies
                   </Nav.Link>
-                  <Nav.Link onClick={onLogout}>Logout</Nav.Link>
                   <Nav.Link as={Link} to="/profile">
                     Profile
                   </Nav.Link>
+                  <Nav.Link onClick={onLogout}>Logout</Nav.Link>
                 </>
               ) : (
                 <>
-                  <Nav.Link as={Link} to="/register">
-                    Register
-                  </Nav.Link>
                   <Nav.Link as={Link} to="/login">
                     Login
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/register">
+                    Register
                   </Nav.Link>
                 </>
               )}

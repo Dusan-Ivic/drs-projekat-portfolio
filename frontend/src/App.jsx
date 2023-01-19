@@ -8,6 +8,11 @@ import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import React from "react";
 import Currencies from "./pages/Currencies";
+//import Coin from "./components/Coin";
+import Info from "./pages/Info";
+import CreateTransactions from "./pages/CreateTransaction";
+import TransactionHistory from "./pages/TransactionHistory";
+import Portfolio from "./pages/Portfolio";
 
 function App() {
   return (
@@ -20,8 +25,17 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route exact path="/profile" element={<Profile />} />
+
             <Route path="/profile/edit" element={<EditProfile />} />
             <Route exact path="/currencies" element={<Currencies />} />
+            <Route path="/coin/:id" element={<Info />} />
+
+            <Route exact path="/TransactionHistory" element={<TransactionHistory />} />
+            <Route
+              path="/transactions/create"
+              element={<CreateTransactions />}
+            />
+            <Route path="/portfolio" element={<Portfolio/>}/>
           </Routes>
         </Container>
       </Router>
