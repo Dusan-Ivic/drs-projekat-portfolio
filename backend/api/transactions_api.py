@@ -168,8 +168,6 @@ def get_calculations():
           x["amount_sold"] += uniqtransaction["kolicina"]
           price_s += float(uniqtransaction["price"])
 
-
-
       
 
   response_data = {
