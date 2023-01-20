@@ -14,13 +14,13 @@ const CreateTransaction = () => {
     transaction_type: "",
     crypto_currency: "",
     timestamp: "",
-    price: "",
+    price: 0,
     kolicina: 0,
   });
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const test = 0;
+
   const { isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   );
@@ -46,13 +46,31 @@ const CreateTransaction = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    //validacija polja
+
+    if (!formData.crypto_currency) {
+      notify("Crypto currency name is required");
+      return;
+      // } else if (!formData.timestamp) {
+      //   notify("Timestamp is required");
+      //   return;
+    } else if (formData.kolicina <= 0) {
+      notify("Amount should be a positivie number");
+      return;
+    } else if (formData.price <= 0) {
+      notify("Price should be a positivie number");
+      return;
+    } else if (!formData.transaction_type) {
+      notify("Transaction type is required");
+      return;
+    }
+
     dispatch(createTransaction(formData));
   };
 
   if (isLoading) {
     return <Spinner />;
   }
+
   //TO DO: ubaciti listu koina sa api.Ubaciti datum.
   return (
     <div className="form">
@@ -78,13 +96,21 @@ const CreateTransaction = () => {
           type="number"
           name="kolicina"
           step="any"
+          min={0}
           onChange={onChange}
           className="input"
         />
         <br></br>
 
         <label className="label">Price:</label>
-        <input type="text" name="price" onChange={onChange} className="input" />
+        <input
+          type="number"
+          name="price"
+          min={0}
+          onChange={onChange}
+          className="input"
+        />
+        <br></br>
 
         <label>Buy?</label>
         <input

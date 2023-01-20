@@ -48,6 +48,25 @@ export const getTransactions = createAsyncThunk(
   }
 );
 
+export const deleteTransaction = createAsyncThunk(
+  "transactions/deleteTransaction",
+  async (transactionId, thunkAPI) => {
+    try {
+      const token = localStorage.getItem("access_token");
+      return await transactionService.deleteTransaction(transactionId, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const transactionSlice = createSlice({
   name: "transactions",
   initialState,
@@ -84,6 +103,21 @@ export const transactionSlice = createSlice({
       .addCase(getTransactions.rejected, (state, action) => {
         state.isError = true;
         state.isLoading = false;
+        state.message = action.payload;
+      })
+      .addCase(deleteTransaction.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteTransaction.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.transactions = state.transactions.filter(
+          (transaction) => transaction["id"]["$oid"] !== action.payload.data.id
+        );
+      })
+      .addCase(deleteTransaction.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
         state.message = action.payload;
       });
   },
