@@ -8,6 +8,7 @@ import {
 import Spinner from "../components/Spinner";
 import axios from "axios";
 
+
 const baseUrl = "http://localhost:5000";
 const token = localStorage.getItem("access_token");
 
@@ -24,6 +25,7 @@ const TransactionHistory = () => {
     },
   };
 
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -35,6 +37,9 @@ const TransactionHistory = () => {
       `http://localhost:5000/api/transactions/${id}`,
       config
     );
+
+    let a = axios.delete(`http://localhost:5000/api/transactions/${id}`);
+
   };
 
   useEffect(() => {

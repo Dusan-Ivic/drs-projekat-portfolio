@@ -169,6 +169,7 @@ def get_calculations():
           price_s += float(uniqtransaction["price"])
 
 
+
       
 
   response_data = {
