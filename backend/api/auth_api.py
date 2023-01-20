@@ -30,24 +30,6 @@ def login():
   }
 
   return Response(response=dumps(response_data), status=200, mimetype="application/json")
-# test and del
-# Pregled profila
-@auth_api.route("/profile", methods=["GET"])
-@jwt_required()
-def my_profile():
-  id = get_jwt()["sub"]
-
-  try:
-    user = User.objects.get(id=id)
-  except DoesNotExist:
-    return not_found()
-
-  response_data = {
-    "success": True,
-    "data": user._data,
-  }
-
-  return Response(response=dumps(response_data), status=200, mimetype="application/json")
   
 @auth_api.errorhandler(401)
 def unauthorized(error=None):

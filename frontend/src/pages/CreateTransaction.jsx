@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { reset, transactions } from "../features/auth/authSlice";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 import "../index.css";
 import Spinner from "../components/Spinner";
 import { createTransaction } from "../features/transactions/transactionSlice";
@@ -18,6 +18,8 @@ const CreateTransaction = () => {
     kolicina: 0,
   });
 
+  const { user } = useSelector((state) => state.auth);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -29,13 +31,10 @@ const CreateTransaction = () => {
     if (isError) {
       notify(message);
     }
-
-    if (isSuccess) {
-      notify(message);
-    }
+    if (!user) navigate("/login");
 
     dispatch(reset());
-  }, [isError, isSuccess, message, navigate, dispatch]);
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -50,9 +49,9 @@ const CreateTransaction = () => {
     if (!formData.crypto_currency) {
       notify("Crypto currency name is required");
       return;
-      // } else if (!formData.timestamp) {
-      //   notify("Timestamp is required");
-      //   return;
+    } else if (!formData.timestamp) {
+      notify("Timestamp is required");
+      return;
     } else if (formData.kolicina <= 0) {
       notify("Amount should be a positivie number");
       return;
@@ -85,11 +84,13 @@ const CreateTransaction = () => {
 
         <label className="label">Select Date:</label>
         <input
-          type="text"
+          type="datetime-local"
           name="timestamp"
           onChange={onChange}
           className="input"
         />
+        <br></br>
+        <br></br>
 
         <label className="label">Amount of coins bought:</label>
         <input
@@ -101,6 +102,7 @@ const CreateTransaction = () => {
           className="input"
         />
         <br></br>
+        <br></br>
 
         <label className="label">Price:</label>
         <input
@@ -110,6 +112,7 @@ const CreateTransaction = () => {
           onChange={onChange}
           className="input"
         />
+        <br></br>
         <br></br>
 
         <label>Buy?</label>

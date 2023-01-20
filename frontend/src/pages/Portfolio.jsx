@@ -3,11 +3,15 @@ import { useEffect, useState } from "react";
 import Spinner from "../components/Spinner";
 import axios from "axios";
 import "../index.css";
+import { useNavigate } from "react-router-dom";
 
-const baseUrl = "http://localhost:5000";
+const baseUrl = "";
 
 const Portfolio = () => {
   const { transactions } = useSelector((state) => state.transactions);
+  const { user } = useSelector((state) => state.auth);
+
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
   const [calculations, setCalculations] = useState([]);
@@ -22,9 +26,10 @@ const Portfolio = () => {
       setTotalSell(res["price_s"]);
       setIsLoading(false);
     };
+    if (!user) navigate("/login");
 
     getCalculations();
-  }, [transactions]);
+  }, [user, transactions, navigate]);
 
   const fetchCalculations = async () => {
     setIsLoading(true);

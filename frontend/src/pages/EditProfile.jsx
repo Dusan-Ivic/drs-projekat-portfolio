@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { editProfile } from "../features/auth/authSlice";
 import { useSelector, useDispatch } from "react-redux";
@@ -25,6 +25,10 @@ const EditProfile = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!user) navigate("/login");
+  }, [user, navigate]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({

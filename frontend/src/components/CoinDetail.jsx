@@ -5,7 +5,7 @@ import Skeleton from "./Skeleton";
 const CoinDetail = () => {
   const { id } = useParams();
   const { response } = useAxios(
-    `coins/${id}?localization=false&tickers=false&market_data=false&community_data=false&sparkline=false`
+    `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&market_data=false&community_data=false&sparkline=false`
   );
 
   if (!response) {

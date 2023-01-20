@@ -6,9 +6,13 @@ import {
   reset,
 } from "../features/transactions/transactionSlice";
 import Spinner from "../components/Spinner";
+import { useNavigate } from "react-router-dom";
 
 const TransactionHistory = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { user } = useSelector((state) => state.auth);
 
   const { transactions, isLoading, isError, message } = useSelector(
     (state) => state.transactions
@@ -19,12 +23,14 @@ const TransactionHistory = () => {
       console.log(message);
     }
 
+    if (!user) navigate("/login");
+
     dispatch(getTransactions());
 
     return () => {
       dispatch(reset);
     };
-  }, [isError, message, dispatch]);
+  }, [user, isError, message, dispatch, navigate]);
 
   const deleteTransactionEvent = (e) => {
     const transactionId = e.target.name;
@@ -45,7 +51,7 @@ const TransactionHistory = () => {
               <div>Coin Name: {transaction.crypto_currency}</div>
               <br></br>
               <div>Type of transaction: {transaction.transaction_type}</div>
-              {/* <div>Time: {transaction.timestamp}</div> */}
+              <div>Time: {transaction.timestamp.$date}</div>
               <br></br>
               <div>Price at the time of transaction: {transaction.price}$</div>
               <br></br>

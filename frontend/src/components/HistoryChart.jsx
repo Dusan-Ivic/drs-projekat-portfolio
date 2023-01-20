@@ -29,7 +29,7 @@ ChartJS.register(
 const HistoryChart = () => {
   const { id } = useParams();
   const { response } = useAxios(
-    `coins/${id}/market_chart?vs_currency=usd&days=7`
+    `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7`
   );
 
   if (!response) {
