@@ -21,7 +21,7 @@ def get_users():
   }
 
   return Response(response=dumps(response_data), status=200, mimetype="application/json")
-
+# proveri uniq za name 
 # Dodaj novog korisnika
 @users_api.route("/api/users", methods=["POST"])
 def register_user():

@@ -68,14 +68,20 @@ def create_transaction():
   }
 
   return Response(response=dumps(response_data, default=str), status=201, mimetype="application/json")
-
+# TO DO: dodaj token
 # Obrisi transakciju 
 @transactions_api.route("/api/transactions/<id>", methods=["DELETE"])
+@jwt_required()
 def delete_transaction(id):
+  auth_id = get_jwt_identity()
   try:
     transaction = Transaction.objects.get(id=id)
   except DoesNotExist:
     return not_found()
+  
+  if str(transaction["userid"]) != auth_id:
+    return unauthorized()
+  
 
   transaction.delete()
 
@@ -116,14 +122,6 @@ def get_calculations():
   list_uniq_names=[]
   list_uniq=[] #lista klasa sa koinima koji imaju uniq name
   
-
-  #transaction_type
-  #price
-  #u zavisnosti sta je t type price ide u bought ili sold
-  #def this section as function
-  #assign this function to thread
-  #start it /return list uniq
-  #stop
   for uniqtransaction in users_transactions1:
     if(uniqtransaction["crypto_currency"] not in list_uniq_names):      
       if(uniqtransaction["transaction_type"] == TransactionType.BUY):
@@ -164,9 +162,6 @@ def get_calculations():
           x["sold"] += float(uniqtransaction["price"])
           x["amount_sold"] += uniqtransaction["kolicina"]
 
-
-
-      # and uniqtransaction["transaction_type"] == TransactionType.BUY
       
 
   response_data = {
