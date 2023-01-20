@@ -1,69 +1,74 @@
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import {
-  getTransactions,
-  getTransactionsCalculation,
-  reset,
-} from "../features/transactions/transactionSlice";
 import Spinner from "../components/Spinner";
 import axios from "axios";
 import "../index.css";
 
 const baseUrl = "http://localhost:5000";
-const token = localStorage.getItem("access_token");
 
 const Portfolio = () => {
-  const { isLoading, isError, message } = useSelector(
-    (state) => state.transactions
-  );
-  const dispatch = useDispatch();
-  const [resp, setResp] = useState([]);
+  const { transactions } = useSelector((state) => state.transactions);
 
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  const [isLoading, setIsLoading] = useState(false);
+  const [calculations, setCalculations] = useState([]);
+  const [totalBuy, setTotalBuy] = useState(0);
+  const [totalSell, setTotalSell] = useState(0);
 
   useEffect(() => {
-    if (isError) {
-      console.log(message);
-    }
-
-    axios
-      .get(baseUrl + `/api/transactions/calculations`, config)
-      .then((response) => setResp(response.data));
-
-    return () => {
-      dispatch(reset);
+    const getCalculations = async () => {
+      const res = await fetchCalculations();
+      setCalculations(res.data);
+      setTotalBuy(res["price_b"]);
+      setTotalSell(res["price_s"]);
+      setIsLoading(false);
     };
-  }, [isError, message, dispatch]);
 
-  if (resp.length == 0) {
+    getCalculations();
+  }, [transactions]);
+
+  const fetchCalculations = async () => {
+    setIsLoading(true);
+    const token = localStorage.getItem("access_token");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const res = await axios.get(
+      baseUrl + "/api/transactions/calculations",
+      config
+    );
+    return res.data;
+  };
+
+  if (isLoading) {
     return <Spinner />;
   }
 
-  console.log(resp);
-
   return (
-    <>
-      <div>
-        {resp.data.map((res) => (
-          <div id={res["name"]} key={res["name"]}>
-            <div>
-              {res.name}: Kupili ste {res.amount_bought} koina, placeni su{" "}
-              {res.bought}$. Prodali ste: {res.amount_sold} koina. Ukupna
-              novcana vrednost prodatih koina je {res.sold}$
-            </div>
-            <br></br>
-            <hr />
-          </div>
-        ))}
-      </div>
-      <div>Ukupno kupljeno: {resp.price_b}</div>
-      <div>Ukupno prodato: {resp.price_s}</div>
-    </>
+    <div>
+      {calculations.length > 0 ? (
+        <>
+          {calculations.map((coin) => {
+            return (
+              <div id={coin["name"]} key={coin["name"]}>
+                <div>
+                  {coin.name}: Kupili ste {coin.amount_bought} koina, placeni su{" "}
+                  {coin.bought}$. Prodali ste: {coin.amount_sold} koina. Ukupna
+                  novcana vrednost prodatih koina je {coin.sold}$
+                </div>
+                <br></br>
+                <hr />
+              </div>
+            );
+          })}
+          <div>Ukupno kupljeno: {totalBuy}</div>
+          <div>Ukupno prodato: {totalSell}</div>
+        </>
+      ) : (
+        <h1>No Transactions Found</h1>
+      )}
+    </div>
   );
 };
 
