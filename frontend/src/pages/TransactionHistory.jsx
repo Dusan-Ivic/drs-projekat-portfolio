@@ -30,6 +30,7 @@ const TransactionHistory = () => {
   const deleteTransaction = (e) => {
     let id = e.target.getAttribute("id2");
     document.getElementById(id).remove();
+
     let a = axios.delete(
       `http://localhost:5000/api/transactions/${id}`,
       config
