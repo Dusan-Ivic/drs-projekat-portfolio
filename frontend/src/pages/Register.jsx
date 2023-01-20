@@ -65,6 +65,9 @@ const Register = () => {
     } else if (!formData.password) {
       notify("Password is required");
       return;
+    } else if (formData.password.length < 6) {
+      notify("Password should contain at least 6 characters");
+      return;
     } else if (!formData.address) {
       notify("Address is required");
       return;
