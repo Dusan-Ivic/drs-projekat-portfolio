@@ -30,12 +30,16 @@ function App() {
             <Route exact path="/currencies" element={<Currencies />} />
             <Route path="/coin/:id" element={<Info />} />
 
-            <Route exact path="/TransactionHistory" element={<TransactionHistory />} />
+            <Route
+              exact
+              path="/transactions"
+              element={<TransactionHistory />}
+            />
             <Route
               path="/transactions/create"
               element={<CreateTransactions />}
             />
-            <Route path="/portfolio" element={<Portfolio/>}/>
+            <Route path="/portfolio" element={<Portfolio />} />
           </Routes>
         </Container>
       </Router>

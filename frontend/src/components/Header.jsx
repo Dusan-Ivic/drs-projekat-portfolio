@@ -36,7 +36,7 @@ function Header() {
             <Nav>
               {user ? (
                 <>
-                  <Nav.Link as={Link} to="/TransactionHistory">
+                  <Nav.Link as={Link} to="/transactions">
                     Transaction History
                   </Nav.Link>
                   <Nav.Link as={Link} to="/portfolio">
