@@ -30,7 +30,7 @@ def login():
   }
 
   return Response(response=dumps(response_data), status=200, mimetype="application/json")
-
+# test and del
 # Pregled profila
 @auth_api.route("/profile", methods=["GET"])
 @jwt_required()

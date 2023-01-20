@@ -8,6 +8,10 @@ import {
 import Spinner from "../components/Spinner";
 import axios from "axios";
 
+
+const baseUrl = "http://localhost:5000";
+const token = localStorage.getItem("access_token");
+
 //portfolio ce biti samo transaction history/ a u portfolio ce biti grupisani svi transactions istog coina u jedan value
 const TransactionHistory = () => {
   const { user } = useSelector((state) => state.auth);
@@ -15,13 +19,27 @@ const TransactionHistory = () => {
     (state) => state.transactions
   );
 
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const deleteTransaction = (e) => {
     let id = e.target.getAttribute("id2");
     document.getElementById(id).remove();
+
+    let a = axios.delete(
+      `http://localhost:5000/api/transactions/${id}`,
+      config
+    );
+
     let a = axios.delete(`http://localhost:5000/api/transactions/${id}`);
+
   };
 
   useEffect(() => {
