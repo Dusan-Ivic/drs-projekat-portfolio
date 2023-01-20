@@ -98,7 +98,8 @@ def delete_transaction(id):
 @transactions_api.route("/api/transactions/calculations", methods=["GET"])
 @jwt_required()
 def get_calculations():
-
+  price_b = 0
+  price_s = 0
   # Izvuci User ID iz tokena
   auth_id = get_jwt_identity()
   
@@ -132,6 +133,7 @@ def get_calculations():
               "amount_sold": 0,
               "amount_bought": uniqtransaction["kolicina"]
         }
+        price_b += float(uniqtransaction["price"])
         list_uniq.append(temp)
 
       elif(uniqtransaction["transaction_type"] == TransactionType.SELL):
@@ -142,6 +144,7 @@ def get_calculations():
               "amount_sold": uniqtransaction["kolicina"],
               "amount_bought": 0
         }
+        price_s += float(uniqtransaction["price"])
         list_uniq.append(temp)
 
         
@@ -158,16 +161,20 @@ def get_calculations():
         if(x["name"] == uniqtransaction["crypto_currency"] and uniqtransaction["transaction_type"] == TransactionType.BUY):
           x["bought"] += float(uniqtransaction["price"])
           x["amount_bought"] += uniqtransaction["kolicina"]
+          price_b += float(uniqtransaction["price"])
         elif(x["name"] == uniqtransaction["crypto_currency"] and uniqtransaction["transaction_type"] == TransactionType.SELL):
           x["sold"] += float(uniqtransaction["price"])
           x["amount_sold"] += uniqtransaction["kolicina"]
+          price_s += float(uniqtransaction["price"])
 
       
 
   response_data = {
       "success": True,
       "count": len(list_uniq),
-      "data": list_uniq
+      "data": list_uniq,
+      "price_b" : price_b,
+      "price_s" : price_s
   }
   
   return Response(response=dumps(response_data, default=str), status=200, mimetype="application/json")
