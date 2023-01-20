@@ -54,13 +54,15 @@ const Portfolio = () => {
             <div>
               {res.name}: Kupili ste {res.amount_bought} koina, placeni su{" "}
               {res.bought}$. Prodali ste: {res.amount_sold} koina. Ukupna
-              novcana vrednost prodatih koina je {res.sold}${" "}
+              novcana vrednost prodatih koina je {res.sold}$
             </div>
             <br></br>
             <hr />
           </div>
         ))}
       </div>
+      <div>Ukupno kupljeno: {resp.price_b}</div>
+      <div>Ukupno prodato: {resp.price_s}</div>
     </>
   );
 };
