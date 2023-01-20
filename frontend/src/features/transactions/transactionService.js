@@ -27,10 +27,23 @@ const getTransactions = async (token) => {
   return res.data;
 };
 
-//get calc
+const deleteTransaction = async (transactionId, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.delete(
+    baseUrl + `/api/transactions/${transactionId}`,
+    config
+  );
+  return res.data;
+};
+
 const transactionService = {
   createTransaction,
   getTransactions,
+  deleteTransaction,
 };
 
 export default transactionService;

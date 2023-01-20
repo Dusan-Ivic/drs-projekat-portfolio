@@ -2,10 +2,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import {
   getTransactions,
+  deleteTransaction,
   reset,
 } from "../features/transactions/transactionSlice";
 import Spinner from "../components/Spinner";
-import axios from "axios";
 
 const TransactionHistory = () => {
   const dispatch = useDispatch();
@@ -26,26 +26,16 @@ const TransactionHistory = () => {
     };
   }, [isError, message, dispatch]);
 
-  const deleteTransaction = async (e) => {
-    const token = localStorage.getItem("access_token");
+  const deleteTransactionEvent = (e) => {
+    const transactionId = e.target.name;
 
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-
-    let id = e.target.getAttribute("id2");
-    document.getElementById(id).remove();
-
-    await axios.delete(`http://localhost:5000/api/transactions/${id}`, config);
+    dispatch(deleteTransaction(transactionId));
   };
 
   if (isLoading) {
     return <Spinner />;
   }
 
-  //TO DO: Treba da vraca samo buy ili sell // ubaciti datum
   return (
     <div>
       {transactions.length > 0 ? (
@@ -61,8 +51,8 @@ const TransactionHistory = () => {
               <br></br>
               <button
                 className="delBtn"
-                id2={transaction["id"]["$oid"]}
-                onClick={deleteTransaction}
+                name={transaction["id"]["$oid"]}
+                onClick={deleteTransactionEvent}
               >
                 Delete Transaction
               </button>
