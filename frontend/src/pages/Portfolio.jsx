@@ -10,6 +10,7 @@ import Spinner from "../components/Spinner";
 import axios from "axios";
 import "../index.css";
 
+const baseUrl = "http://localhost:5000";
 const token = localStorage.getItem("access_token");
 
 const Portfolio = () => {
